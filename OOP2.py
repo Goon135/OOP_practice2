@@ -7,7 +7,7 @@ class Millimeter:
     def __init__(self, value):
         if type(value) is int:
             value = float(value)
-        if type(value) in [Centimeter, Meter, Inch]:
+        if isinstance(value, Millimeter):
             self._value = value.as_millimeters() / self.ratio
         else:
             self._value = value
@@ -22,20 +22,19 @@ class Millimeter:
     def __mul__(self, factor):
         return type(self)(self._value * factor)
     def __truediv__(self, factor):
-        try:
-            return type(self)(self._value / factor)
-        except(ZeroDivisionError):
-            return 'ZeroDivisionError'
+        return type(self)(self._value / factor)
     def __hash__(self):
         return hash(self.as_millimeters())
     def __eq__(self, other):
-        return hash(self) == hash(other)
+        return self.as_millimeters() == other.as_millimeters()
     def __lt__(self, other):
-        return hash(self) < hash(other)
+        return self.as_millimeters() < other.as_millimeters()
     def __int__(self):
-        return int(self._value)
+        if type(self._value) in [int, float]:
+            return int(self.as_millimeters())
     def __float__(self):
-        return float(self._value)
+        if type(self._value) in [int, float]:
+            return float(self.as_millimeters())
 
 class Centimeter(Millimeter):
     label = 'Centimeter'
